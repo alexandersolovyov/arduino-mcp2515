@@ -34,7 +34,7 @@ void MCP2515::startSPI() {
     {
         SPI.setClockDivider(SPI_CLOCK_DIV4);
     }
-    else if(F_CPU > MCP2515::SPI_CLOCK)
+    else
     {
         SPI.setClockDivider(SPI_CLOCK_DIV2);
     }
