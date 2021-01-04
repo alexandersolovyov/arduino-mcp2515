@@ -22,13 +22,30 @@ MCP2515::MCP2515(const uint8_t _CS)
 }
 
 void MCP2515::startSPI() {
-    SPI.beginTransaction(SPISettings(SPI_CLOCK, MSBFIRST, SPI_MODE0));
+    //SPI.beginTransaction(SPISettings(SPI_CLOCK, MSBFIRST, SPI_MODE0));
+    SPI.setBitOrder(MSBFIRST);
+    SPI.setDataMode(SPI_MODE0);
+    // If CPU clock is greater than SPI clock of MCP2515, divide it
+    if (F_CPU > (MCP2515::SPI_CLOCK * 4))
+    {
+        SPI.setClockDivider(SPI_CLOCK_DIV8);
+    }
+    if (F_CPU > (MCP2515::SPI_CLOCK * 2))
+    {
+        SPI.setClockDivider(SPI_CLOCK_DIV4);
+    }
+    else if(F_CPU > MCP2515::SPI_CLOCK)
+    {
+        SPI.setClockDivider(SPI_CLOCK_DIV2);
+    }
+    SPI.begin();
     digitalWrite(SPICS, LOW);
 }
 
 void MCP2515::endSPI() {
     digitalWrite(SPICS, HIGH);
-    SPI.endTransaction();
+    //SPI.endTransaction();
+    SPI.end();
 }
 
 MCP2515::ERROR MCP2515::reset(void)
